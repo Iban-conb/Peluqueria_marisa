@@ -1,4 +1,4 @@
-const CACHE_NAME = "peluqueria-marisa-v2";
+const CACHE_NAME = "peluqueria-marisa-v3";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
