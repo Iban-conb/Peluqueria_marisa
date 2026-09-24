@@ -43,3 +43,21 @@ Work Log:
 Stage Summary:
 - Funcionalidad de almacén completa y verificada en marcha en el puerto 3000.
 - Commit local preparado; pendiente de push a GitHub que requiere PAT del usuario con permiso de escritura.
+---
+Task ID: 3
+Agent: Super Z (principal)
+Task: Push a GitHub de main (3 commits pendientes) con PAT proporcionado por el usuario
+
+Work Log:
+- Estado git verificado: main local adelantada 3 commits respecto a origin/main (51cdda22 snapshot entorno+next.config, c41fdfb función almacén, f50ae46 capturas+worklog). Árbol limpio salvo gitlink anidado peluqueria-marisa (solo flag dirty, no afecta).
+- git fetch sin token OK (repo público); detectada rama remota nueva remote-application-updates-f7989 (no relevante).
+- Push con token inline (no persistido en .git/config) → error 403 "Permission to Iban-conb/Peluqueria_marisa.git denied to Iban-conb".
+- API /repos/... devuelve permissions push:true (refleja rol del usuario owner, NO los scopes del token fine-grained — quirk conocido de GitHub).
+- Prueba definitiva vía API: POST /git/refs para crear rama temporal → 403 "Resource not accessible by personal access token". Confirmado: el token fine-grained carece del permiso de repositorio "Contents: Read and write".
+- Cabecera github-authentication-token-expiration: 2026-10-01 (el token caduca el 1 de octubre de 2026).
+- El token solo se usó transitoriamente en comandos; no quedó escrito en .git/config, remotos ni archivos. La rama de prueba nunca se creó (403), nada que limpiar en el remoto.
+
+Stage Summary:
+- Push BLOQUEADO por permisos del token: falta "Contents: Read and write" (o el repo no está en el Repository access del token).
+- Solución comunicada al usuario: editar el token añadiendo Contents: RW, o generar token clásico con scope repo.
+- Los 3 commits siguen listos en local; en cuanto llegue token válido, repetir: git push https://x-access-token:<TOKEN>@github.com/Iban-conb/Peluqueria_marisa.git main
