@@ -1,0 +1,20 @@
+INSTALAR PELUQUERÍA EN LINUX
+
+1. Haz doble clic en «instalar-peluqueria.sh».
+2. Elige «Ejecutar» si el explorador de archivos pregunta qué hacer.
+3. El instalador copiará la aplicación, instalará sus dependencias y creará un acceso directo en el Escritorio.
+
+Requisito:
+- Bun o Node.js/npm deben estar instalados.
+- Si tienes Node.js, el instalador usará npm automáticamente.
+- Node.js se puede descargar desde https://nodejs.org/
+
+Si el doble clic no ejecuta el archivo:
+- Clic derecho sobre instalar-peluqueria.sh > Propiedades > Permisos.
+- Activa «Permitir ejecutar el archivo como programa».
+- Vuelve a hacer doble clic y selecciona «Ejecutar en terminal».
+
+MODO DE DISEÑO
+
+Para abrir la aplicación antes de hacer la instalación final, ejecuta «abrir-modo-diseno.sh».
+Se abrirá en el navegador en http://localhost:3000. La ventana de terminal debe permanecer abierta.
