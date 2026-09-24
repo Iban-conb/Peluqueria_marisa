@@ -36,3 +36,11 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Local data, backups and generated helper files
+db/*.db
+3001
+*.pid
+AGENTS.md
+CLAUDE.md
+peluqueria-backup-*.tar.gz
