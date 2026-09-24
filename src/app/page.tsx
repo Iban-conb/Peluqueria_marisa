@@ -7,6 +7,7 @@ import SettingsView from "@/views/settings-view";
 import MonthCalendarView from "@/views/month-calendar-view";
 import {
   IcBarberPole,
+  IcBox,
   IcCalendar,
   IcCog,
   IcDownload,
@@ -16,8 +17,9 @@ import {
 import { useUI } from "@/state/ui";
 import { useStore } from "@/state/store";
 import InstallModal from "@/components/install-modal";
+import WarehouseView from "@/views/warehouse-view";
 
-type Tab = "calendario" | "agenda" | "clientes" | "ajustes";
+type Tab = "calendario" | "agenda" | "clientes" | "almacen" | "ajustes";
 
 const TABS: {
   id: Tab;
@@ -27,6 +29,7 @@ const TABS: {
   { id: "agenda", label: "Agenda", icon: (s) => <IcCalendar size={s} /> },
   { id: "calendario", label: "Calendario", icon: (s) => <IcGrid size={s} /> },
   { id: "clientes", label: "Clientes", icon: (s) => <IcUsers size={s} /> },
+  { id: "almacen", label: "Almacén", icon: (s) => <IcBox size={s} /> },
   { id: "ajustes", label: "Ajustes", icon: (s) => <IcCog size={s} /> },
 ];
 
@@ -134,6 +137,7 @@ function Shell() {
           )}
           {tab === "agenda" && <AgendaView initialDay={agendaDay} />}
           {tab === "clientes" && <ClientsView />}
+          {tab === "almacen" && <WarehouseView />}
           {tab === "ajustes" && <SettingsView />}
         </div>
       </main>
@@ -149,7 +153,7 @@ function Shell() {
         className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-line shadow-[0_-8px_24px_-12px_rgba(27,38,33,0.25)]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {TABS.map((t) => {
             const active = tab === t.id;
             return (

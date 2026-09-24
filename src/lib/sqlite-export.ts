@@ -4,8 +4,10 @@ import type {
   Client,
   Consent,
   DB,
+  Product,
   SalonInfo,
   Service,
+  StockMovement,
 } from "./types";
 import {
   CONSENT_TEXT_VERSION,
@@ -97,6 +99,35 @@ export async function exportToSQLiteBlob(db: DB): Promise<Blob> {
       zip TEXT NOT NULL DEFAULT '',
       city TEXT NOT NULL DEFAULT ''
     );
+
+    CREATE TABLE products (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      brand TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL DEFAULT 'otros',
+      sku TEXT NOT NULL DEFAULT '',
+      stock INTEGER NOT NULL DEFAULT 0,
+      minStock INTEGER NOT NULL DEFAULT 0,
+      cost REAL NOT NULL DEFAULT 0,
+      price REAL NOT NULL DEFAULT 0,
+      supplier TEXT NOT NULL DEFAULT '',
+      notes TEXT NOT NULL DEFAULT '',
+      createdAt TEXT NOT NULL DEFAULT ''
+    );
+    CREATE INDEX idx_products_name ON products(name);
+
+    CREATE TABLE movements (
+      id TEXT PRIMARY KEY,
+      productId TEXT NOT NULL,
+      type TEXT NOT NULL,
+      qty INTEGER NOT NULL,
+      resultStock INTEGER NOT NULL DEFAULT 0,
+      reason TEXT NOT NULL DEFAULT '',
+      date TEXT NOT NULL,
+      FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
+    );
+    CREATE INDEX idx_movements_productId ON movements(productId);
+    CREATE INDEX idx_movements_date ON movements(date);
   `);
 
   const insertSalon = sqlite.prepare(
@@ -175,6 +206,43 @@ export async function exportToSQLiteBlob(db: DB): Promise<Blob> {
   }
   insertConsent.free();
 
+  const insertProduct = sqlite.prepare(
+    `INSERT INTO products (id, name, brand, category, sku, stock, minStock, cost, price, supplier, notes, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  for (const p of db.products) {
+    insertProduct.run([
+      p.id,
+      p.name,
+      p.brand || "",
+      p.category || "otros",
+      p.sku || "",
+      p.stock ?? 0,
+      p.minStock ?? 0,
+      p.cost ?? 0,
+      p.price ?? 0,
+      p.supplier || "",
+      p.notes || "",
+      p.createdAt || "",
+    ]);
+  }
+  insertProduct.free();
+
+  const insertMovement = sqlite.prepare(
+    `INSERT INTO movements (id, productId, type, qty, resultStock, reason, date) VALUES (?, ?, ?, ?, ?, ?, ?)`
+  );
+  for (const m of db.movements) {
+    insertMovement.run([
+      m.id,
+      m.productId,
+      m.type,
+      m.qty,
+      m.resultStock ?? 0,
+      m.reason || "",
+      m.date,
+    ]);
+  }
+  insertMovement.free();
+
   const binary = sqlite.export();
   sqlite.close();
   return new Blob([binary as unknown as BlobPart], {
@@ -194,6 +262,8 @@ export async function importFromSQLiteBlob(
   services: Service[];
   consents: Consent[];
   salon?: SalonInfo;
+  products: Product[];
+  movements: StockMovement[];
 }> {
   const sql = await getSQL();
   const buffer = await file.arrayBuffer();
@@ -231,7 +301,43 @@ export async function importFromSQLiteBlob(
       salon = undefined;
     }
 
-    return { clients, appointments, services, consents, salon };
+    // Las tablas del almacén pueden no existir en copias antiguas
+    let products: Product[] = [];
+    let movements: StockMovement[] = [];
+    try {
+      products = queryAll<Product>(sqlite, "SELECT * FROM products").map(
+        (p) => ({
+          ...p,
+          stock: Number(p.stock) || 0,
+          minStock: Number(p.minStock) || 0,
+          cost: Number(p.cost) || 0,
+          price: Number(p.price) || 0,
+        })
+      );
+    } catch {
+      products = [];
+    }
+    try {
+      movements = queryAll<StockMovement>(sqlite, "SELECT * FROM movements").map(
+        (m) => ({
+          ...m,
+          qty: Number(m.qty) || 0,
+          resultStock: Number(m.resultStock) || 0,
+        })
+      );
+    } catch {
+      movements = [];
+    }
+
+    return {
+      clients,
+      appointments,
+      services,
+      consents,
+      salon,
+      products,
+      movements,
+    };
   } finally {
     sqlite.close();
   }

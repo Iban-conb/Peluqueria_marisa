@@ -77,12 +77,75 @@ export interface Settings {
   closedDates: string[];
 }
 
+/* ============================ ALMACÉN ============================ */
+
+/** Categorías de producto del salón. */
+export type ProductCategory =
+  | "coloracion"
+  | "cosmetica"
+  | "herramientas"
+  | "consumibles"
+  | "venta"
+  | "otros";
+
+export const PRODUCT_CATEGORIES: Record<
+  ProductCategory,
+  { label: string; fg: string; bg: string }
+> = {
+  coloracion: { label: "Coloración", fg: "#9a5a68", bg: "#f5dde3" },
+  cosmetica: { label: "Cosmética capilar", fg: "#46564f", bg: "#e5eae4" },
+  herramientas: { label: "Herramientas", fg: "#46564f", bg: "#ebe1e0" },
+  consumibles: { label: "Consumibles", fg: "#a16207", bg: "#f7ecd2" },
+  venta: { label: "Venta a cliente", fg: "#5a8a4a", bg: "#e1eed8" },
+  otros: { label: "Otros", fg: "#6b5050", bg: "#ebe1e0" },
+};
+
+/** Producto del almacén del salón. */
+export interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  category: ProductCategory;
+  /** Referencia / código interno (opcional) */
+  sku: string;
+  /** Unidades disponibles actualmente */
+  stock: number;
+  /** Umbral a partir del cual se avisa de stock bajo */
+  minStock: number;
+  /** Precio de coste por unidad (€) */
+  cost: number;
+  /** Precio de venta por unidad (€); 0 si no se vende */
+  price: number;
+  supplier: string;
+  notes: string;
+  createdAt: string;
+}
+
+export type StockMovementType = "entrada" | "salida" | "ajuste";
+
+/** Movimiento de stock: entrada (compra), salida (consumo) o ajuste. */
+export interface StockMovement {
+  id: string;
+  productId: string;
+  type: StockMovementType;
+  /** Cantidad del movimiento (siempre positiva) */
+  qty: number;
+  /** Stock del producto tras registrar el movimiento */
+  resultStock: number;
+  /** Motivo o comentario del movimiento */
+  reason: string;
+  /** Fecha y hora ISO del movimiento */
+  date: string;
+}
+
 export interface DB {
   version: number;
   clients: Client[];
   appointments: Appointment[];
   services: Service[];
   consents: Consent[];
+  products: Product[];
+  movements: StockMovement[];
   salon: SalonInfo;
   settings: Settings;
 }

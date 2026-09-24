@@ -224,6 +224,48 @@ export const IcPenNib = (p: P) =>
     </>
   );
 
+/* ---------- iconos de almacén ---------- */
+
+/** Caja / paquete de producto */
+export const IcBox = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 2.8 20.5 7v10L12 21.2 3.5 17V7L12 2.8Z" />
+      <path d="M3.8 7.2 12 11.4l8.2-4.2M12 11.4v9.6" />
+    </>
+  );
+
+/** Entrada de stock: flecha hacia dentro de una bandeja */
+export const IcStockIn = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 3.5v9.5m0 0 3.8-3.8M12 13l-3.8-3.8" />
+      <path d="M3.5 14.5v3.2A2.8 2.8 0 0 0 6.3 20.5h11.4a2.8 2.8 0 0 0 2.8-2.8v-3.2" />
+    </>
+  );
+
+/** Salida de stock: flecha hacia fuera de una bandeja */
+export const IcStockOut = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 13V3.5m0 0 3.8 3.8M12 3.5 8.2 7.3" />
+      <path d="M3.5 14.5v3.2A2.8 2.8 0 0 0 6.3 20.5h11.4a2.8 2.8 0 0 0 2.8-2.8v-3.2" />
+    </>
+  );
+
+/** Historial de movimientos */
+export const IcHistory = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 12V6.5M3.5 12H9" />
+      <path d="M12 8v4.3l2.8 1.7" />
+    </>
+  );
+
 /** Poste de peluquero 💈: franjas diagonales rojas y azules sobre blanco. */
 export function IcBarberPole({ size = 18, ...rest }: P) {
   const id = useId();
