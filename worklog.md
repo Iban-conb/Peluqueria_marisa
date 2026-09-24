@@ -19,3 +19,27 @@ Stage Summary:
 - App de Peluquería Marisa en marcha en el puerto 3000, HTTP 200 estable (~36ms tras compilación).
 - Supervisor: /home/z/my-project/.zscripts/dev.sh (PID registrado en .zscripts/dev.pid), log en .zscripts/dev.log y dev.log.
 - Nota: existe 1 aviso de hidratación (reloj con new Date() en render inicial) preexistente en el código; solo visible en modo desarrollo, no afecta al funcionamiento. Candidato a arreglo futuro.
+---
+Task ID: 2
+Agent: Super Z (principal)
+Task: Añadir gestión de almacén (productos del salón) con diseño consistente, y responder sobre subida al repo
+
+Work Log:
+- Explorados patrones del código: types.ts, indexeddb.ts, store.tsx (Context API), vistas (clients-view como referencia), aura-modal (Modal/Field/inputCls), icons.tsx, tokens de globals.css (tema Rosa por defecto).
+- types.ts: añadidos Product, ProductCategory (6 categorías con meta de colores), StockMovement, StockMovementType, PRODUCT_CATEGORIES y campos products/movements en DB.
+- indexeddb.ts: SEED_PRODUCTS (12 productos de peluquería), seedMovements (5 movimientos), freshDB/seedDB actualizados y normalize() con migración para bases antiguas sin almacén.
+- store.tsx: addProduct (con movimiento de stock inicial atómico), updateProduct, deleteProduct (borra movimientos), addStockMovement (entrada/salida con validación de stock, ajuste), movementsOf, productById; replaceAll endurecido para archivos antiguos.
+- icons.tsx: IcBox, IcStockIn, IcStockOut, IcHistory.
+- components/product-modal.tsx y components/movement-modal.tsx: ficha de producto (nombre*, marca, categoría, ref, stock inicial, umbral, coste, precio, proveedor, notas; acepta coma decimal) y movimiento (selector entrada/salida, cantidades rápidas, motivos predefinidos, preview de stock resultante, botón deshabilitado si no hay stock).
+- views/warehouse-view.tsx: cabecera con buscador, 4 tarjetas de cifras, banner de reposición clicable, filtros por categoría, tarjetas de producto ordenadas por criticidad (agotados primero), panel lateral de últimos movimientos y lista de compra sugerida.
+- page.tsx: pestaña "almacen" con IcBox, grid móvil de 5 columnas.
+- settings-view.tsx: importaciones JSON/SQLite actualizadas con products/movements.
+- sqlite-export.ts: tablas products y movements en exportación, lectura tolerante en importación (compatibilidad con copias antiguas).
+- Bug corregido durante pruebas: productById no estaba implementado en el store (crash en cliente) — añadido al interface y a la implementación.
+- Pruebas funcionales con navegador headless: entrada de 3 uds de guantes (0→3), salida de 2 uds de espuma (2→0), creación de "Mascarilla de keratina 500 ml" (13 refs, 858,80 € valorados), validación de salida excesiva bloqueada, persistencia verificada tras recarga, pestañas Clientes/Ajustes sin regresiones. Lint limpio en archivos nuevos/modificados.
+- Capturas: download/almacen-vista.png y download/almacen-modal-producto.png.
+- Commit local c41fdfb "Añadir gestión de almacén con control de stock" listo para push (requiere token del usuario).
+
+Stage Summary:
+- Funcionalidad de almacén completa y verificada en marcha en el puerto 3000.
+- Commit local preparado; pendiente de push a GitHub que requiere PAT del usuario con permiso de escritura.
