@@ -78,11 +78,14 @@ function readStoredTheme(): ThemeId {
 interface ThemeContextValue {
   theme: ThemeId;
   setTheme: (t: ThemeId) => void;
+  /** Alterna entre modo claro (rosa) y oscuro (noche). */
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
   theme: "rosa",
   setTheme: () => {},
+  toggleTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -108,8 +111,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(new Event("theme-changed"));
   }, []);
 
+  const toggleTheme = useCallback(() => {
+    setThemeState((current) => {
+      const next: ThemeId = current === "noche" ? "rosa" : "noche";
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        /* ignore */
+      }
+      applyTheme(next);
+      window.dispatchEvent(new Event("theme-changed"));
+      return next;
+    });
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

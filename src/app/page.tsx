@@ -9,13 +9,12 @@ import {
   IcBarberPole,
   IcCalendar,
   IcCog,
-  IcDownload,
   IcGrid,
   IcUsers,
 } from "@/components/icons";
-import { useUI } from "@/state/ui";
 import { useStore } from "@/state/store";
-import InstallModal from "@/components/install-modal";
+import UpdateIndicator from "@/components/update-indicator";
+import ThemeToggle from "@/components/theme-toggle";
 
 type Tab = "calendario" | "agenda" | "clientes" | "ajustes";
 
@@ -58,8 +57,6 @@ function Clock() {
 function Shell() {
   const [tab, setTab] = useState<Tab>("agenda");
   const [agendaDay, setAgendaDay] = useState<string | undefined>();
-  const [installModalOpen, setInstallModalOpen] = useState(false);
-  const { install, installAvailable, standalone } = useUI();
   const { db } = useStore();
   const salonName = db.salon?.name || "Peluquería Marisa";
 
@@ -105,18 +102,12 @@ function Shell() {
           </nav>
 
           <div className="flex items-center gap-3 ml-auto">
-            {!standalone && (
-              <button
-                onClick={() => setInstallModalOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-moss text-paper px-3 py-1.5 text-[11px] font-bold hover:bg-pine2 active:scale-[0.97] transition-all shadow"
-              >
-                <IcDownload size={13} />
-                <span className="hidden sm:inline">Instalar app</span>
-              </button>
-            )}
+            <UpdateIndicator />
             <div className="hidden sm:block">
               <Clock />
             </div>
+            {/* Botón modo claro/oscuro, al final del todo */}
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -182,17 +173,6 @@ function Shell() {
           })}
         </div>
       </nav>
-
-      {installModalOpen && (
-        <InstallModal
-          onClose={() => setInstallModalOpen(false)}
-          onInstall={() => {
-            setInstallModalOpen(false);
-            install();
-          }}
-          installAvailable={installAvailable}
-        />
-      )}
     </div>
   );
 }

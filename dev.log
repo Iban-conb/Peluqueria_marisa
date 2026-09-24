@@ -1,0 +1,20 @@
+▲ Next.js 16.3.2 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.3.92:3000
+✓ Ready in 521ms
+✓ Running next.config.ts took 57ms
+
+ GET /api/update 200 in 369ms (next.js: 311ms, application-code: 57ms)
+ GET / 200 in 382ms (next.js: 105ms, application-code: 277ms)
+ GET / 200 in 73ms (next.js: 6ms, application-code: 67ms)
+ GET /api/update 200 in 45ms (next.js: 7ms, application-code: 37ms)
+ GET / 200 in 79ms (next.js: 5ms, application-code: 74ms)
+ GET / 200 in 186ms (next.js: 15ms, application-code: 171ms)
+ GET / 200 in 90ms (next.js: 4ms, application-code: 86ms)
+ GET / 200 in 57ms (next.js: 4ms, application-code: 53ms)
+ GET / 200 in 86ms (next.js: 5ms, application-code: 81ms)
+ GET / 200 in 104ms (next.js: 22ms, application-code: 83ms)
+ GET / 200 in 56ms (next.js: 6ms, application-code: 50ms)
+ GET / 200 in 59ms (next.js: 3ms, application-code: 56ms)
+ GET / 200 in 55ms (next.js: 3ms, application-code: 52ms)
+ GET / 200 in 173ms (next.js: 4ms, application-code: 169ms)
