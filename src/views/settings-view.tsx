@@ -734,6 +734,8 @@ export default function SettingsView() {
               ? parsed.services
               : DEFAULT_SERVICES.map((x) => ({ ...x })),
           consents: parseConsents(parsed.consents),
+          products: Array.isArray(parsed.products) ? parsed.products : [],
+          movements: Array.isArray(parsed.movements) ? parsed.movements : [],
           salon: normalizeSalon(parsed.salon),
           settings: { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) },
         });
@@ -762,6 +764,9 @@ export default function SettingsView() {
             ? data.services
             : DEFAULT_SERVICES.map((x) => ({ ...x })),
         consents: data.consents,
+        // El almacén viaja en el SQLite desde la versión con Almacén
+        products: data.products ?? [],
+        movements: data.movements ?? [],
         // El salon viaja en el SQLite; si es un archivo antiguo se conserva el local
         salon: data.salon ?? normalizeSalon(db.salon),
         settings: { ...DEFAULT_SETTINGS },
