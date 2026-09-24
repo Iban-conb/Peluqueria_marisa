@@ -24,7 +24,6 @@ import {
   setStoredClientId,
 } from "../lib/drive-sync";
 import { useDriveSyncContext } from "../components/drive-sync-provider";
-import { useTheme, THEMES } from "../state/theme";
 import Modal, { Field, inputCls } from "../components/aura-modal";
 import InstallModal from "../components/install-modal";
 import {
@@ -35,12 +34,10 @@ import {
   IcCheck,
   IcDownload,
   IcMobile,
-  IcMoon,
   IcMonitor,
   IcPencil,
   IcPlus,
   IcScissors,
-  IcSun,
   IcTrash,
   IcUpload,
   IcWifi,
@@ -654,8 +651,7 @@ export default function SettingsView() {
   const sqliteRef = useRef<HTMLInputElement>(null);
   const s = db.settings;
 
-  // Tema
-  const { theme, setTheme } = useTheme();
+
 
   // Drive sync
   const [clientIdInput, setClientIdInput] = useState(() => getStoredClientId());
@@ -912,50 +908,7 @@ export default function SettingsView() {
         </p>
       </div>
 
-      {/* === APARIENCIA (modo claro/oscuro) === */}
-      <Section
-        title="Apariencia"
-          desc="Modo claro u oscuro. También puedes cambiarlo con el botón de sol/luna de la cabecera. Se guarda en este dispositivo."
-        icon={<IcMonitor size={15} />}
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {THEMES.map((t) => {
-            const active = theme === t.id;
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => {
-                  setTheme(t.id);
-                  toast(
-                    t.id === "noche" ? "Modo oscuro activado" : "Modo claro activado"
-                  );
-                }}
-                className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all hover:-translate-y-px hover:shadow-md ${
-                  active
-                    ? "border-moss bg-mint/50 ring-1 ring-moss/40"
-                    : "border-line bg-paper/60 hover:border-linedark"
-                }`}
-              >
-                <span
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                    active ? "bg-moss text-paper" : "bg-paper text-soft border border-line"
-                  }`}
-                >
-                  {t.id === "noche" ? <IcMoon size={18} /> : <IcSun size={18} />}
-                </span>
-                <span className="min-w-0">
-                  <p className="font-display font-bold text-sm text-ink flex items-center gap-1.5">
-                    {t.id === "noche" ? "Modo oscuro" : "Modo claro"}
-                    {active && <IcCheck size={14} className="text-moss" />}
-                  </p>
-                  <p className="text-[11px] text-soft mt-0.5">{t.description}</p>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </Section>
+      {/* El modo claro/oscuro se cambia ahora con el botón de sol/luna de la cabecera. */}
 
       {/* === DATOS DEL SALÓN === */}
       <SalonSection />
