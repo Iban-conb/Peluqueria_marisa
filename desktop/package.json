@@ -1,0 +1,87 @@
+{
+  "name": "peluqueria-marisa",
+  "productName": "PeluqueriaMarisa",
+  "version": "1.1.0",
+  "description": "Gestión de citas para Peluquería Marisa",
+  "author": "Peluquería Marisa",
+  "homepage": "https://github.com/Iban-conb/Peluqueria_marisa",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win nsis",
+    "dist:linux": "electron-builder --linux deb"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2",
+    "sql.js": "1.14.0"
+  },
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.peluqueriamarisa.app",
+    "productName": "PeluqueriaMarisa",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "db.js",
+      "package.json",
+      "assets/**",
+      "node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "app-server",
+        "to": "app-server"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "signAndEditExecutable": false,
+      "artifactName": "PeluqueriaMarisa-Setup-${version}.${ext}",
+      "publisherName": "Peluqueria Marisa"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Peluquería Marisa"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Iban-conb",
+        "repo": "Peluqueria_marisa",
+        "releaseType": "release"
+      }
+    ],
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Office",
+      "maintainer": "Peluquería Marisa",
+      "artifactName": "peluqueria-marisa-${version}-${arch}.${ext}"
+    },
+    "deb": {
+      "artifactName": "peluqueria-marisa_${version}_${arch}.${ext}"
+    }
+  }
+}

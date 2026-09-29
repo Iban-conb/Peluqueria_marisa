@@ -1,0 +1,350 @@
+import { useId, type SVGProps } from "react";
+
+type P = SVGProps<SVGSVGElement> & { size?: number };
+
+function base({ size = 18, ...rest }: P, children: React.ReactNode, filled = false) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke={filled ? "none" : "currentColor"}
+      strokeWidth={1.9}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...rest}
+    >
+      {children}
+    </svg>
+  );
+}
+
+export const IcScissors = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="6" cy="6" r="2.6" />
+      <circle cx="6" cy="18" r="2.6" />
+      <path d="M8.2 7.6 20 19M8.2 16.4 20 5M14.2 10.1l1.9 1.9" />
+    </>
+  );
+
+export const IcCalendar = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="3.5" y="5" width="17" height="16" rx="2.5" />
+      <path d="M3.5 10h17M8 2.8V7M16 2.8V7" />
+    </>
+  );
+
+export const IcUsers = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="9" cy="8" r="3.4" />
+      <path d="M2.8 20.2c.7-3.3 3.2-5.2 6.2-5.2s5.5 1.9 6.2 5.2" />
+      <path d="M15.5 4.9a3.4 3.4 0 0 1 0 6.2M17.8 15.4c1.7.8 3 2.3 3.4 4.8" />
+    </>
+  );
+
+export const IcCog = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="12" cy="12" r="3.2" />
+      <path d="M19.2 12a7.2 7.2 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7.3 7.3 0 0 0-2-1.2L14.4 3h-4l-.4 2.5a7.3 7.3 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5a7.2 7.2 0 0 0 0 2.4l-2 1.5 2 3.4 2.3-1a7.3 7.3 0 0 0 2 1.2l.4 2.5h4l.4-2.5a7.3 7.3 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" />
+    </>
+  );
+
+export const IcPlus = (p: P) => base(p, <path d="M12 5v14M5 12h14" />);
+export const IcX = (p: P) => base(p, <path d="m6 6 12 12M18 6 6 18" />);
+export const IcChevronL = (p: P) => base(p, <path d="m14.5 5.5-6.5 6.5 6.5 6.5" />);
+export const IcChevronR = (p: P) => base(p, <path d="m9.5 5.5 6.5 6.5-6.5 6.5" />);
+export const IcArrowL = (p: P) => base(p, <path d="M19 12H5m6-7-7 7 7 7" />);
+
+export const IcClock = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </>
+  );
+
+export const IcPhone = (p: P) =>
+  base(
+    p,
+    <path d="M5.5 3.5h3l1.7 4.2-2.1 1.6a12.5 12.5 0 0 0 6.6 6.6l1.6-2.1 4.2 1.7v3a2 2 0 0 1-2.1 2A16.5 16.5 0 0 1 3.5 5.6a2 2 0 0 1 2-2.1Z" />
+  );
+
+export const IcPin = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 21s-6.8-6-6.8-11a6.8 6.8 0 0 1 13.6 0c0 5-6.8 11-6.8 11Z" />
+      <circle cx="12" cy="9.8" r="2.4" />
+    </>
+  );
+
+export const IcSearch = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="10.8" cy="10.8" r="6.3" />
+      <path d="m15.5 15.5 5 5" />
+    </>
+  );
+
+export const IcTrash = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M4 6.5h16M9.5 6.5V4.8A1.3 1.3 0 0 1 10.8 3.5h2.4a1.3 1.3 0 0 1 1.3 1.3v1.7M6.2 6.5l.9 12.6a2 2 0 0 0 2 1.9h5.8a2 2 0 0 0 2-1.9l.9-12.6M10 10.8v6M14 10.8v6" />
+    </>
+  );
+
+export const IcPencil = (p: P) =>
+  base(p, <path d="M4 20h4.2L19.5 8.7a2.1 2.1 0 0 0-3-3L5.3 17 4 20ZM14.5 7.5l2 2" />);
+
+export const IcCheck = (p: P) => base(p, <path d="m5 12.5 4.5 4.5L19 7.5" />);
+
+export const IcDownload = (p: P) =>
+  base(p, <path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M4.5 19.5h15" />);
+
+export const IcUpload = (p: P) =>
+  base(p, <path d="M12 15V4m0 0 4.5 4.5M12 4 7.5 8.5M4.5 19.5h15" />);
+
+export const IcAlert = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 3.5 22 20H2L12 3.5Z" />
+      <path d="M12 10v4.2M12 17.3v.2" />
+    </>
+  );
+
+export const IcMobile = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="7" y="2.8" width="10" height="18.4" rx="2.4" />
+      <path d="M11 18h2" />
+    </>
+  );
+
+export const IcMonitor = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="3" y="4" width="18" height="12.5" rx="2" />
+      <path d="M9 20.5h6M12 16.5v4" />
+    </>
+  );
+
+export const IcList = (p: P) =>
+  base(p, <path d="M8.5 6h12M8.5 12h12M8.5 18h12M3.8 6h.4M3.8 12h.4M3.8 18h.4" />);
+
+export const IcGrid = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="3.5" y="3.5" width="7.3" height="7.3" rx="1.4" />
+      <rect x="13.2" y="3.5" width="7.3" height="7.3" rx="1.4" />
+      <rect x="3.5" y="13.2" width="7.3" height="7.3" rx="1.4" />
+      <rect x="13.2" y="13.2" width="7.3" height="7.3" rx="1.4" />
+    </>
+  );
+
+export const IcUserPlus = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="10" cy="8" r="3.4" />
+      <path d="M3.5 20.2c.7-3.3 3.2-5.2 6.5-5.2 1.4 0 2.7.3 3.8 1M18.5 13.5v5M16 16h5" />
+    </>
+  );
+
+export const IcRotate = (p: P) =>
+  base(p, <path d="M4.5 12a7.5 7.5 0 1 1 2.2 5.3M4.5 12V6.8M4.5 12h5.2" />);
+
+export const IcBan = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M6 6l12 12" />
+    </>
+  );
+
+export const IcSun = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4" />
+    </>
+  );
+
+export const IcMoon = (p: P) =>
+  base(p, <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />);
+
+export const IcSparkle = (p: P) =>
+  base(p, <path d="M12 3.5c.6 3.8 2.7 5.9 6.5 6.5-3.8.6-5.9 2.7-6.5 6.5-.6-3.8-2.7-5.9-6.5-6.5 3.8-.6 5.9-2.7 6.5-6.5ZM19 15.5c.3 1.8 1.2 2.7 3 3-1.8.3-2.7 1.2-3 3-.3-1.8-1.2-2.7-3-3 1.8-.3 2.7-1.2 3-3Z" />);
+
+export const IcEuro = (p: P) =>
+  base(p, <path d="M17.5 5.5A7.3 7.3 0 0 0 6.8 8.5a7.6 7.6 0 0 0 0 7 7.3 7.3 0 0 0 10.7 3M4.5 10.3h9M4.5 13.7h8" />);
+
+export const IcWifi = (p: P) =>
+  base(p, <path d="M3 9.5a13.5 13.5 0 0 1 18 0M6.2 13a9 9 0 0 1 11.6 0M9.4 16.4a4.5 4.5 0 0 1 5.2 0M12 19.5v.1" />);
+
+export const IcMail = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2.2" />
+      <path d="m3.8 7 7.1 5.3a2 2 0 0 0 2.2 0L20.2 7" />
+    </>
+  );
+
+export const IcShieldCheck = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 3.2 19 6v5.3c0 4.6-3 7.9-7 9.5-4-1.6-7-4.9-7-9.5V6l7-2.8Z" />
+      <path d="m8.8 12 2.2 2.2 4.2-4.4" />
+    </>
+  );
+
+export const IcFileText = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M6 3.5h8L19 8.5v12H6v-17Z" />
+      <path d="M14 3.5v5h5M9 12.5h6M9 16h6" />
+    </>
+  );
+
+export const IcPenNib = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="m14.8 4.2 5 5L9 20H4v-5L14.8 4.2Z" />
+      <path d="m12.5 6.5 5 5M4 20l3.5-3.5" />
+    </>
+  );
+
+/* ---------- iconos de almacén ---------- */
+
+/** Caja / paquete de producto */
+export const IcBox = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 2.8 20.5 7v10L12 21.2 3.5 17V7L12 2.8Z" />
+      <path d="M3.8 7.2 12 11.4l8.2-4.2M12 11.4v9.6" />
+    </>
+  );
+
+/** Entrada de stock: flecha hacia dentro de una bandeja */
+export const IcStockIn = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 3.5v9.5m0 0 3.8-3.8M12 13l-3.8-3.8" />
+      <path d="M3.5 14.5v3.2A2.8 2.8 0 0 0 6.3 20.5h11.4a2.8 2.8 0 0 0 2.8-2.8v-3.2" />
+    </>
+  );
+
+/** Salida de stock: flecha hacia fuera de una bandeja */
+export const IcStockOut = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M12 13V3.5m0 0 3.8 3.8M12 3.5 8.2 7.3" />
+      <path d="M3.5 14.5v3.2A2.8 2.8 0 0 0 6.3 20.5h11.4a2.8 2.8 0 0 0 2.8-2.8v-3.2" />
+    </>
+  );
+
+/** Historial de movimientos */
+export const IcHistory = (p: P) =>
+  base(
+    p,
+    <>
+      <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 12V6.5M3.5 12H9" />
+      <path d="M12 8v4.3l2.8 1.7" />
+    </>
+  );
+
+/** Poste de peluquero 💈: franjas diagonales rojas y azules sobre blanco. */
+export function IcBarberPole({ size = 18, ...rest }: P) {
+  const id = useId();
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      {...rest}
+    >
+      <defs>
+        <clipPath id={id}>
+          <rect x="9.3" y="5.2" width="5.4" height="16.4" rx="2.7" />
+        </clipPath>
+      </defs>
+      {/* bola superior */}
+      <circle cx="12" cy="3" r="1.7" fill="#fff" stroke="currentColor" strokeWidth="1.3" />
+      {/* cuerpo con franjas */}
+      <g clipPath={`url(#${id})`}>
+        <rect x="9.3" y="5.2" width="5.4" height="16.4" fill="#ffffff" />
+        <path d="M7.4 10.4 17 7v2.9L7.4 13.3z" fill="#b3364d" />
+        <path d="M7.4 14.9 17 11.5v2.9L7.4 17.8z" fill="#34558b" />
+        <path d="M7.4 19.4 17 16v2.9L7.4 22.3z" fill="#b3364d" />
+      </g>
+      {/* contorno */}
+      <rect
+        x="9.3"
+        y="5.2"
+        width="5.4"
+        height="16.4"
+        rx="2.7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+export const IcMinus = (p: P) => base(p, <path d="M5 12h14" />);
+
+export const IcUndo = (p: P) =>
+  base(p, <><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" /></>);
+
+export const IcCopy = (p: P) =>
+  base(
+    p,
+    <>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </>
+  );
+
+export const IcCart = (p: P) =>
+  base(
+    p,
+    <>
+      <circle cx="9" cy="20" r="1.4" />
+      <circle cx="17" cy="20" r="1.4" />
+      <path d="M2 3h2.5l2.2 11.2a1.5 1.5 0 0 0 1.5 1.3h7.9a1.5 1.5 0 0 0 1.5-1.2L20 7H5.1" />
+    </>
+  );
+
+export const IcWhatsapp = (p: P) =>
+  base(
+    p,
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />,
+    true
+  );

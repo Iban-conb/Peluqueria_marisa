@@ -1,0 +1,90 @@
+================================================================
+ PELUQUERÍA MARISA - CÓDIGO FUENTE COMPLETO (v1.1.0)
+================================================================
+
+Qué es este paquete
+-------------------
+Carpeta fuente completa de la aplicación de gestión de citas para
+peluquería "Peluquería Marisa": PWA web + aplicación de escritorio
+(Windows .exe / Linux .deb) con Verifactu integrado.
+
+Fecha de empaquetado: 30/09/2026 (UTC+2)
+
+Estructura del proyecto
+-----------------------
+src/app/            Aplicación Next.js 16 (páginas, API, estilos)
+src/views/          Vistas: Agenda, Calendario, Clientes, Facturación,
+                    Almacén, Configuración
+src/components/     Componentes UI (modales, tarjetas, firma, PWA...)
+src/state/          Estado global (store.tsx -> IndexedDB -> .sqlite)
+src/lib/            Librerías clave:
+                      - verifactu.ts        Comunicación con Verifactu (QR, huella)
+                      - sqlite-export.ts    BD .sqlite real en el PC
+                      - invoice-pdf.ts      PDF/ticket de facturas con QR
+                      - clients-xlsx.ts     Import/Export clientes Excel
+                      - drive-sync.ts       Sincronización con Google Drive
+                      - indexeddb.ts        Persistencia local
+src/app/api/verifactu/  Proxy API Verifactu (clave nunca en el navegador)
+desktop/            App de escritorio Electron:
+                      - main.js / preload.js / db.js
+                      - installer.nsi (instalador Windows .exe)
+                      - empaquetado .deb (Linux)
+                      - app-server/ (servidor local embebido)
+public/             PWA (manifest, service worker, iconos)
+prisma/             Esquema de BD (schema.prisma)
+scripts/            Utilidades (tests Verifactu/Excel/BD, instalador .exe)
+.zscripts/          Supervisor del servidor de desarrollo
+worklog.md          Registro de trabajo del proyecto
+
+Qué NO incluye este paquete (y por qué)
+---------------------------------------
+- node_modules/     Se regenera con "bun install" o "npm install"
+- .git/             Pesaba 240 MB (los instaladores .zip quedaron dentro
+                    del historial). El historial de commits está en
+                    GitHub (Iban-conb/Peluqueria_marisa) + copia local.
+- download/         Los instaladores ya generados (.deb / .exe) se
+                    entregaron como ZIPs aparte.
+- skills/, upload/  Carpetas internas del entorno de desarrollo.
+
+Cómo arrancar en tu PC (modo web/PWA)
+-------------------------------------
+1) Instala Node.js 20+ (o Bun) y Git.
+2) En esta carpeta:
+     bun install        (o: npm install)
+3) Arranca en desarrollo:
+     bun run dev        (o: npm run dev)
+   -> Abre http://localhost:3000
+4) Build de producción:
+     bun run build && bun run start
+
+Aplicación de escritorio (Windows / Linux)
+------------------------------------------
+La carpeta desktop/ contiene la app Electron con:
+- BD .sqlite viva en el PC (autoguardado + importación automática)
+- Sincronización con Google Drive
+- installer.nsi para generar el .exe de Windows
+- Empaquetado .deb para Linux
+Los instaladores ya compilados (v1.1.0) se entregaron como
+"PeluqueriaMarisa-1.1.0-instalador-windows.zip" y
+"peluqueria-marisa-1.1.0-instalador-linux.zip".
+
+Verifactu (facturas con QR)
+---------------------------
+Solo tienes que hacer una cosa:
+  Configuración -> Verifactu -> pegar tu API key.
+A partir de ese momento, al emitir una factura la app la envía
+automáticamente, guarda huella/CSV y pinta el QR oficial en el
+ticket/PDF. Incluye modo prueba y selector de proveedor
+(verifacti / verifacturapi). La API key nunca se expone al
+navegador: viaja por el proxy interno src/app/api/verifactu/.
+
+Nota sobre .env
+---------------
+El archivo .env incluido trae una ruta de base de datos propia del
+entorno de desarrollo original (DATABASE_URL). Puedes borrarlo o
+ajustarlo en tu PC; en escritorio la aplicación guarda los datos en un archivo
+SQLite real dentro de la carpeta de datos de Electron. En navegador utiliza
+IndexedDB. El archivo SQLite también puede exportarse/importarse y sincronizarse
+con Drive, y la aplicación no depende de esta variable para funcionar.
+
+================================================================

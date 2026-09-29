@@ -1,0 +1,33 @@
+# Dependencias
+node_modules/
+desktop/node_modules/
+
+# Compilación y artefactos
+.next/
+out/
+build/
+dist/
+desktop/dist/
+
+# Logs y estado local
+*.log
+.update-state.json
+update.log
+next-env.d.ts
+
+# Variables y configuración local
+.env
+.env.local
+.env.*.local
+
+# Datos locales y copias
+*.sqlite
+*.db
+backups/
+
+# Sistema/editor
+.DS_Store
+.vscode/
+.idea/
+AGENTS.md
+CLAUDE.md
