@@ -15,6 +15,7 @@ import {
   IcAlert,
   IcBox,
   IcCart,
+  IcChevronR,
   IcCopy,
   IcCog,
   IcDownload,
@@ -161,7 +162,7 @@ export default function WarehouseView() {
     [db.movements]
   );
 
-  /** Ajuste rápido ±1 desde la tarjeta: un toque, sin formulario. */
+  /** Ajuste rápido ±1 desde la fila: un toque, sin formulario. */
   function quickAdjust(p: Product, type: "entrada" | "salida") {
     const mv = addStockMovement(
       p.id,
@@ -524,7 +525,7 @@ export default function WarehouseView() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-5 items-start">
-        {/* listado de productos: tabla delimitada con buscador */}
+        {/* listado de productos: filas compactas con buscador */}
         <div className="lg:col-span-2 min-w-0 rounded-xl border border-line bg-card shadow-sm overflow-hidden flex flex-col">
           {/* barra de la tabla: filtro de texto + contador */}
           <div className="flex items-center gap-2 px-3 py-2.5 border-b border-line bg-mint/30 shrink-0">
@@ -551,7 +552,7 @@ export default function WarehouseView() {
           </div>
 
           {/* cuerpo con scroll delimitado */}
-          <div className="overflow-y-auto max-h-[62dvh] lg:max-h-[68dvh] p-2 space-y-2">
+          <div className="overflow-y-auto max-h-[62dvh] lg:max-h-[68dvh] p-2 space-y-1.5">
           {filtered.length === 0 && products.length === 0 && (
             <div className="rounded-xl border border-dashed border-linedark bg-card/60 py-16 text-center anim-rise">
               <span className="inline-flex w-14 h-14 rounded-full bg-mint text-moss items-center justify-center mb-3">
@@ -599,13 +600,26 @@ export default function WarehouseView() {
               </button>
             </div>
           )}
+          {/* cabecera de columnas */}
+          {filtered.length > 0 && (
+            <div className="hidden lg:flex items-center gap-2 px-2.5 pt-1 pb-1.5 text-[9px] font-bold uppercase tracking-[0.08em] text-faint border-b border-line/80">
+              <span className="w-3.5 shrink-0" aria-hidden />
+              <span className="w-[22px] shrink-0" aria-hidden />
+              <span className="flex-1 min-w-0">Producto</span>
+              <span className="w-16 shrink-0 text-right">Coste</span>
+              <span className="w-16 shrink-0 text-right">Venta</span>
+              <span className="w-[68px] shrink-0 text-right">Stock</span>
+              <span className="w-[58px] shrink-0" aria-hidden />
+              <span className="w-[46px] shrink-0" aria-hidden />
+            </div>
+          )}
+
           {filtered.map((p, i) => {
             const st = stockState(p);
-            const meta = STATE_META[st];
             const catMeta = categoryById(categories, p.category);
             const hasSalePrice = p.price > 0;
             const isOpen = expanded === p.id;
-            const historial = isOpen ? movementsOf(p.id).slice(0, 6) : [];
+            const historial = isOpen ? movementsOf(p.id).slice(0, 8) : [];
             const pct =
               p.minStock > 0
                 ? Math.min(
@@ -613,222 +627,208 @@ export default function WarehouseView() {
                     Math.round((p.stock / Math.max(1, p.minStock * 2)) * 100)
                   )
                 : null;
+            const nivelColor =
+              st === "agotado"
+                ? "#9c2b3e"
+                : st === "bajo"
+                ? "#d9a23d"
+                : "#7ba05b";
+            const meta2 = [
+              catMeta.name,
+              p.sku && `ref. ${p.sku}`,
+              p.supplier,
+            ]
+              .filter(Boolean)
+              .join(" · ");
             return (
               <div
                 key={p.id}
-                className={`anim-rise rounded-xl border bg-card shadow-sm transition-all hover:shadow-md ${
+                className={`anim-rise rounded-lg border border-l-[3px] bg-card shadow-sm transition-all hover:shadow-md ${
                   st === "agotado"
-                    ? "border-danger/30"
+                    ? "border-line border-l-danger"
                     : st === "bajo"
-                    ? "border-warnfg/30"
-                    : "border-line"
+                    ? "border-line border-l-warnfg"
+                    : "border-line border-l-linedark"
                 }`}
-                style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}
+                style={{ animationDelay: `${Math.min(i, 12) * 30}ms` }}
               >
-                {/* fila 1 · identidad, estado y control rápido */}
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 px-3.5 pt-3.5">
-                  {/* caja */}
-                  <span
-                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: catMeta.bg, color: catMeta.fg }}
+                {/* fila compacta */}
+                <div className="flex items-center gap-2 px-2 py-1.5">
+                  {/* desplegar */}
+                  <button
+                    onClick={() => setExpanded(isOpen ? null : p.id)}
+                    className="w-3.5 shrink-0 flex items-center justify-center text-faint hover:text-ink transition-colors"
+                    aria-expanded={isOpen}
+                    aria-label={`${isOpen ? "Ocultar" : "Ver"} movimientos de ${p.name}`}
+                    title="Ver movimientos"
                   >
-                    <IcBox size={19} />
+                    <IcChevronR
+                      size={12}
+                      className={`transition-transform ${isOpen ? "rotate-90" : ""}`}
+                    />
+                  </button>
+
+                  {/* categoría por color */}
+                  <span
+                    className="w-[22px] h-[22px] rounded-md flex items-center justify-center shrink-0"
+                    style={{ background: catMeta.bg, color: catMeta.fg }}
+                    title={catMeta.name}
+                  >
+                    <IcBox size={12} />
                   </span>
 
-                  <div className="min-w-[170px] flex-1">
-                    <p className="text-sm font-semibold text-ink truncate leading-tight">
+                  {/* nombre + ficha */}
+                  <div className="min-w-[110px] flex-1">
+                    <p className="text-[13px] font-semibold text-ink truncate leading-tight">
                       {p.name}
                       {p.brand && (
                         <span className="text-soft font-normal"> · {p.brand}</span>
                       )}
                     </p>
+                    <p className="text-[10px] text-faint truncate leading-tight mt-0.5">
+                      {meta2}
+                    </p>
+                    {/* en móvil los precios bajan bajo el nombre */}
+                    <p className="lg:hidden text-[10px] num leading-tight mt-0.5">
+                      <span className={p.cost > 0 ? "text-soft" : "text-faint"}>
+                        coste {p.cost > 0 ? eur.format(p.cost) : "—"}
+                      </span>
+                      {" · "}
+                      <span
+                        className={
+                          hasSalePrice ? "font-bold text-moss" : "text-faint"
+                        }
+                      >
+                        venta {hasSalePrice ? eur.format(p.price) : "—"}
+                      </span>
+                    </p>
                   </div>
 
-                  {/* el aviso y el contador bajan a su propia línea en móvil */}
-                  <div className="flex items-center gap-2 ml-auto shrink-0">
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[9px] font-bold num leading-none shrink-0"
-                      style={{ color: meta.fg, background: meta.bg }}
-                    >
-                      {meta.label}
-                      {p.minStock > 0 && ` · mín. ${p.minStock}`}
-                    </span>
+                  {/* precios en columna, a partir de lg */}
+                  <span
+                    className={`hidden lg:inline w-16 shrink-0 text-right text-[11px] num ${
+                      p.cost > 0 ? "text-ink" : "text-faint"
+                    }`}
+                  >
+                    {p.cost > 0 ? eur.format(p.cost) : "—"}
+                  </span>
+                  <span
+                    className={`hidden lg:inline w-16 shrink-0 text-right text-[11px] num ${
+                      hasSalePrice ? "font-bold text-moss" : "text-faint"
+                    }`}
+                  >
+                    {hasSalePrice ? eur.format(p.price) : "—"}
+                  </span>
 
-                    {/* control rápido de stock + nivel, agrupados */}
-                    <div className="flex flex-col items-end gap-1.5 shrink-0">
-                    <div className="flex items-stretch rounded-lg border border-linedark bg-paper overflow-hidden shadow-sm">
-                      <button
-                        onClick={() => quickAdjust(p, "salida")}
-                        disabled={p.stock <= 0}
-                        className={`w-9 flex items-center justify-center transition-colors ${
-                          p.stock > 0
-                            ? "text-danger hover:bg-dangersoft active:bg-danger/20"
-                            : "text-faint/50 cursor-not-allowed"
-                        }`}
-                        title={
-                          p.stock > 0
-                            ? "Consumir 1 unidad (salida rápida)"
-                            : "Sin stock disponible"
-                        }
-                        aria-label={`Restar una unidad de ${p.name}`}
-                      >
-                        <IcMinus size={14} />
-                      </button>
-                      <span className="px-2 min-w-[54px] text-center flex flex-col justify-center border-x border-linedark/60 bg-card">
-                        <span className="font-display font-bold num text-lg leading-none text-ink">
-                          {p.stock}
-                        </span>
-                        <span className="text-[9px] font-semibold uppercase tracking-wide text-faint mt-0.5">
-                          uds
-                        </span>
-                      </span>
-                      <button
-                        onClick={() => quickAdjust(p, "entrada")}
-                        className="w-9 flex items-center justify-center text-okfg hover:bg-oksoft active:bg-okfg/20 transition-colors"
-                        title="Añadir 1 unidad (entrada rápida)"
-                        aria-label={`Sumar una unidad de ${p.name}`}
-                      >
-                        <IcPlus size={14} />
-                      </button>
-                    </div>
+                  {/* nivel de stock */}
+                  <span className="w-[52px] sm:w-[68px] shrink-0 flex items-center justify-end gap-1.5">
+                    <span className="text-[13px] font-bold num text-ink">
+                      {p.stock}
+                    </span>
                     {pct !== null && (
                       <span
-                        className="h-1.5 w-full rounded-full bg-linedark/70 overflow-hidden block"
+                        className="h-1.5 w-7 rounded-full bg-linedark/70 overflow-hidden block shrink-0"
                         role="img"
                         aria-label={`Nivel de stock: ${pct} % del mínimo recomendado`}
                       >
                         <span
                           className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${pct}%`,
-                            background:
-                              st === "agotado"
-                                ? "#9c2b3e"
-                                : st === "bajo"
-                                ? "#d9a23d"
-                                : "#7ba05b",
-                          }}
+                          style={{ width: `${pct}%`, background: nivelColor }}
                         />
                       </span>
                     )}
-                    </div>
-                  </div>
+                  </span>
+
+                  {/* control rápido */}
+                  <span className="w-[58px] shrink-0 flex items-stretch rounded-md border border-linedark bg-paper overflow-hidden">
+                    <button
+                      onClick={() => quickAdjust(p, "salida")}
+                      disabled={p.stock <= 0}
+                      className={`w-[29px] flex items-center justify-center transition-colors ${
+                        p.stock > 0
+                          ? "text-danger hover:bg-dangersoft"
+                          : "text-faint/50 cursor-not-allowed"
+                      }`}
+                      title="Consumir 1 unidad"
+                      aria-label={`Restar una unidad de ${p.name}`}
+                    >
+                      <IcMinus size={12} />
+                    </button>
+                    <button
+                      onClick={() => quickAdjust(p, "entrada")}
+                      className="w-[29px] flex items-center justify-center text-okfg hover:bg-oksoft transition-colors"
+                      title="Añadir 1 unidad"
+                      aria-label={`Sumar una unidad de ${p.name}`}
+                    >
+                      <IcPlus size={12} />
+                    </button>
+                  </span>
+
+                  {/* acciones: en móvil viven en la fila desplegada */}
+                  <span className="hidden sm:flex w-[46px] shrink-0 items-center justify-end gap-0.5">
+                    <button
+                      onClick={() => setEditing(p)}
+                      className="p-1 rounded text-soft hover:text-ink hover:bg-mint transition-colors"
+                      title="Editar producto"
+                      aria-label={`Editar ${p.name}`}
+                    >
+                      <IcPencil size={13} />
+                    </button>
+                    <button
+                      onClick={() => removeProduct(p)}
+                      className="p-1 rounded text-soft hover:text-danger hover:bg-dangersoft transition-colors"
+                      title="Eliminar producto"
+                      aria-label={`Eliminar ${p.name}`}
+                    >
+                      <IcTrash size={13} />
+                    </button>
+                  </span>
                 </div>
 
-                {/* fila 2 · ficha de datos repartida a todo el ancho */}
-                <dl className="px-3.5 mt-2.5 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-2">
-                  <div className="min-w-0">
-                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
-                      Categoría
-                    </dt>
-                    <dd className="mt-1">
-                      <span
-                        className="rounded-full px-1.5 py-0.5 text-[10px] font-bold"
-                        style={{ color: catMeta.fg, background: catMeta.bg }}
-                      >
-                        {catMeta.name}
-                      </span>
-                    </dd>
-                  </div>
-                  <div className="min-w-0">
-                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
-                      Referencia
-                    </dt>
-                    <dd className="mt-1 text-[12px] text-ink num truncate">
-                      {p.sku || "—"}
-                    </dd>
-                  </div>
-                  <div className="min-w-0">
-                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
-                      Proveedor
-                    </dt>
-                    <dd className="mt-1 text-[12px] text-ink truncate">
-                      {p.supplier || "—"}
-                    </dd>
-                  </div>
-                  <div className="min-w-0">
-                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
-                      Coste
-                    </dt>
-                    <dd
-                      className={`mt-1 text-[12px] num truncate ${
-                        p.cost > 0 ? "text-ink" : "text-faint"
-                      }`}
-                    >
-                      {p.cost > 0 ? eur.format(p.cost) : "—"}
-                    </dd>
-                  </div>
-                  <div className="min-w-0">
-                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
-                      Venta
-                    </dt>
-                    <dd
-                      className={`mt-1 text-[12px] num truncate ${
-                        hasSalePrice ? "font-bold text-moss" : "text-faint"
-                      }`}
-                    >
-                      {hasSalePrice ? eur.format(p.price) : "—"}
-                    </dd>
-                  </div>
-                </dl>
-
-                {/* fila de acciones secundarias */}
-                <div className="mt-2.5 pt-2 border-t border-line/70 flex items-center gap-1 flex-wrap px-3.5">
-                  <button
-                    onClick={() => setMoving({ product: p, type: "entrada" })}
-                    className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-bold text-okfg hover:bg-oksoft transition-colors"
-                    title="Registrar entrada con cantidad y motivo"
-                  >
-                    <IcStockIn size={13} /> Entrada…
-                  </button>
-                  <button
-                    onClick={() => setMoving({ product: p, type: "salida" })}
-                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-bold transition-colors ${
-                      p.stock > 0
-                        ? "text-danger hover:bg-dangersoft"
-                        : "text-faint/60 cursor-not-allowed"
-                    }`}
-                    disabled={p.stock <= 0}
-                    title="Registrar salida con cantidad y motivo"
-                  >
-                    <IcStockOut size={13} /> Salida…
-                  </button>
-                  <span className="flex-1" />
-                  <button
-                    onClick={() => setExpanded(isOpen ? null : p.id)}
-                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-bold transition-colors ${
-                      isOpen
-                        ? "bg-mint text-moss"
-                        : "text-soft hover:text-ink hover:bg-mint"
-                    }`}
-                    title="Ver historial del producto"
-                  >
-                    <IcHistory size={13} /> Historial
-                  </button>
-                  <button
-                    onClick={() => setEditing(p)}
-                    className="p-1.5 rounded-md text-soft hover:text-ink hover:bg-mint transition-colors"
-                    title="Editar producto"
-                  >
-                    <IcPencil size={14} />
-                  </button>
-                  <button
-                    onClick={() => removeProduct(p)}
-                    className="p-1.5 rounded-md text-soft hover:text-danger hover:bg-dangersoft transition-colors"
-                    title="Eliminar producto"
-                  >
-                    <IcTrash size={14} />
-                  </button>
-                </div>
-
-                {/* historial inline del producto */}
+                {/* fila desplegada */}
                 {isOpen && (
-                  <div className="mt-2 pt-2 px-3.5 pb-1 border-t border-line/70 anim-fade">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-faint mb-1.5">
-                      Últimos movimientos de este producto
+                  <div className="px-2 pb-2 pt-1.5 border-t border-line/70 anim-fade">
+                    <div className="flex items-center gap-1 flex-wrap mb-1.5">
+                      <button
+                        onClick={() => setEditing(p)}
+                        className="sm:hidden inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-bold text-soft hover:bg-mint transition-colors"
+                      >
+                        <IcPencil size={12} /> Editar
+                      </button>
+                      <button
+                        onClick={() => removeProduct(p)}
+                        className="sm:hidden inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-bold text-soft hover:text-danger hover:bg-dangersoft transition-colors"
+                      >
+                        <IcTrash size={12} /> Eliminar
+                      </button>
+                      <button
+                        onClick={() => setMoving({ product: p, type: "entrada" })}
+                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-bold text-okfg hover:bg-oksoft transition-colors"
+                      >
+                        <IcStockIn size={12} /> Registrar entrada…
+                      </button>
+                      <button
+                        onClick={() => setMoving({ product: p, type: "salida" })}
+                        disabled={p.stock <= 0}
+                        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-bold transition-colors ${
+                          p.stock > 0
+                            ? "text-danger hover:bg-dangersoft"
+                            : "text-faint/60 cursor-not-allowed"
+                        }`}
+                      >
+                        <IcStockOut size={12} /> Registrar salida…
+                      </button>
+                      <span className="ml-auto text-[11px] num text-faint">
+                        {p.stock} uds · mín. {p.minStock} ·{" "}
+                        {eur.format(p.stock * p.cost)} en almacén
+                      </span>
+                    </div>
+
+                    <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-faint mb-1">
+                      Últimos movimientos
                     </p>
                     {historial.length === 0 ? (
-                      <p className="text-xs text-soft py-1">
+                      <p className="text-[11px] text-soft py-1">
                         Todavía no hay movimientos registrados.
                       </p>
                     ) : (
@@ -838,22 +838,22 @@ export default function WarehouseView() {
                           return (
                             <div
                               key={m.id}
-                              className="flex items-center gap-2 rounded-md px-1.5 py-1 hover:bg-mint/40 transition-colors"
+                              className="flex items-center gap-2 rounded px-1.5 py-0.5 text-[11px]"
                             >
                               <span
-                                className="w-5 h-5 rounded flex items-center justify-center text-[11px] font-bold shrink-0"
+                                className="w-4 h-4 rounded flex items-center justify-center font-bold shrink-0"
                                 style={{ color: mm.fg, background: mm.bg }}
                               >
                                 {mm.sign}
                               </span>
-                              <span className="min-w-0 flex-1 text-[11px] text-ink truncate">
+                              <span className="min-w-0 flex-1 text-ink truncate">
                                 {m.reason || mm.label}
                               </span>
-                              <span className="text-[10px] text-faint shrink-0 num">
+                              <span className="text-faint shrink-0 num">
                                 {fmtWhen(m.date)}
                               </span>
                               <span
-                                className="text-[10px] font-bold num shrink-0 rounded-full px-1.5 py-0.5"
+                                className="font-bold num shrink-0 rounded-full px-1.5"
                                 style={{ color: mm.fg, background: mm.bg }}
                               >
                                 {mm.sign}
