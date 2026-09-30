@@ -335,7 +335,7 @@ export default function WarehouseView() {
     <div className="space-y-4">
       {/* cabecera */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="min-w-0 flex-1">
+        <div className="w-full sm:min-w-0 sm:flex-1">
           <h1 className="font-display font-extrabold text-2xl sm:text-[28px] leading-tight text-ink">
             Almacén
           </h1>
@@ -616,7 +616,7 @@ export default function WarehouseView() {
             return (
               <div
                 key={p.id}
-                className={`anim-rise rounded-xl border p-3.5 bg-card shadow-sm transition-all hover:shadow-md ${
+                className={`anim-rise rounded-xl border bg-card shadow-sm transition-all hover:shadow-md ${
                   st === "agotado"
                     ? "border-danger/30"
                     : st === "bajo"
@@ -625,7 +625,8 @@ export default function WarehouseView() {
                 }`}
                 style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}
               >
-                <div className="flex items-start gap-3">
+                {/* fila 1 · identidad, estado y control rápido */}
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 px-3.5 pt-3.5">
                   {/* caja */}
                   <span
                     className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
@@ -634,39 +635,27 @@ export default function WarehouseView() {
                     <IcBox size={19} />
                   </span>
 
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-[170px] flex-1">
                     <p className="text-sm font-semibold text-ink truncate leading-tight">
                       {p.name}
                       {p.brand && (
                         <span className="text-soft font-normal"> · {p.brand}</span>
                       )}
                     </p>
-                    <p className="text-[11px] text-soft mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                        style={{ color: catMeta.fg, background: catMeta.bg }}
-                      >
-                        {catMeta.name}
-                      </span>
-                      {p.sku && <span className="num">ref. {p.sku}</span>}
-                      {p.supplier && <span>{p.supplier}</span>}
-                    </p>
-                    <p className="text-[11px] mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 num">
-                      {p.cost > 0 && (
-                        <span className="text-faint">
-                          coste {eur.format(p.cost)}
-                        </span>
-                      )}
-                      {hasSalePrice && (
-                        <span className="font-bold text-moss">
-                          venta {eur.format(p.price)}
-                        </span>
-                      )}
-                    </p>
                   </div>
 
-                  {/* control rápido de stock */}
-                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  {/* el aviso y el contador bajan a su propia línea en móvil */}
+                  <div className="flex items-center gap-2 ml-auto shrink-0">
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[9px] font-bold num leading-none shrink-0"
+                      style={{ color: meta.fg, background: meta.bg }}
+                    >
+                      {meta.label}
+                      {p.minStock > 0 && ` · mín. ${p.minStock}`}
+                    </span>
+
+                    {/* control rápido de stock + nivel, agrupados */}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
                     <div className="flex items-stretch rounded-lg border border-linedark bg-paper overflow-hidden shadow-sm">
                       <button
                         onClick={() => quickAdjust(p, "salida")}
@@ -702,15 +691,12 @@ export default function WarehouseView() {
                         <IcPlus size={14} />
                       </button>
                     </div>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[9px] font-bold num leading-none"
-                      style={{ color: meta.fg, background: meta.bg }}
-                    >
-                      {meta.label}
-                      {p.minStock > 0 && ` · mín. ${p.minStock}`}
-                    </span>
                     {pct !== null && (
-                      <span className="w-28 h-1.5 rounded-full bg-linedark/40 overflow-hidden block">
+                      <span
+                        className="h-1.5 w-full rounded-full bg-linedark/70 overflow-hidden block"
+                        role="img"
+                        aria-label={`Nivel de stock: ${pct} % del mínimo recomendado`}
+                      >
                         <span
                           className="h-full rounded-full transition-all"
                           style={{
@@ -725,11 +711,69 @@ export default function WarehouseView() {
                         />
                       </span>
                     )}
+                    </div>
                   </div>
                 </div>
 
+                {/* fila 2 · ficha de datos repartida a todo el ancho */}
+                <dl className="px-3.5 mt-2.5 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-2">
+                  <div className="min-w-0">
+                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
+                      Categoría
+                    </dt>
+                    <dd className="mt-1">
+                      <span
+                        className="rounded-full px-1.5 py-0.5 text-[10px] font-bold"
+                        style={{ color: catMeta.fg, background: catMeta.bg }}
+                      >
+                        {catMeta.name}
+                      </span>
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
+                      Referencia
+                    </dt>
+                    <dd className="mt-1 text-[12px] text-ink num truncate">
+                      {p.sku || "—"}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
+                      Proveedor
+                    </dt>
+                    <dd className="mt-1 text-[12px] text-ink truncate">
+                      {p.supplier || "—"}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
+                      Coste
+                    </dt>
+                    <dd
+                      className={`mt-1 text-[12px] num truncate ${
+                        p.cost > 0 ? "text-ink" : "text-faint"
+                      }`}
+                    >
+                      {p.cost > 0 ? eur.format(p.cost) : "—"}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[9px] font-bold uppercase tracking-[0.07em] text-faint">
+                      Venta
+                    </dt>
+                    <dd
+                      className={`mt-1 text-[12px] num truncate ${
+                        hasSalePrice ? "font-bold text-moss" : "text-faint"
+                      }`}
+                    >
+                      {hasSalePrice ? eur.format(p.price) : "—"}
+                    </dd>
+                  </div>
+                </dl>
+
                 {/* fila de acciones secundarias */}
-                <div className="mt-2.5 pt-2 border-t border-line/70 flex items-center gap-1 flex-wrap">
+                <div className="mt-2.5 pt-2 border-t border-line/70 flex items-center gap-1 flex-wrap px-3.5">
                   <button
                     onClick={() => setMoving({ product: p, type: "entrada" })}
                     className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-bold text-okfg hover:bg-oksoft transition-colors"
@@ -779,7 +823,7 @@ export default function WarehouseView() {
 
                 {/* historial inline del producto */}
                 {isOpen && (
-                  <div className="mt-2 pt-2 border-t border-line/70 anim-fade">
+                  <div className="mt-2 pt-2 px-3.5 pb-1 border-t border-line/70 anim-fade">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-faint mb-1.5">
                       Últimos movimientos de este producto
                     </p>
