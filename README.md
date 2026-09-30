@@ -48,3 +48,41 @@ cuando dos dispositivos han modificado el mismo registro sin verse, **al
 sincronizar se conserva la versión más reciente y la otra se descarta sin
 aviso**. Para un salón con varios dispositivos trabajando a la vez, conviene
 saber esto antes de confiarle datos que no se puedan recuperar.
+
+## El listado del almacén
+
+El inventario se muestra como una **fila por producto**, no como tarjetas: con
+muchas referencias, una tarjeta por producto hace la lista interminable.
+
+Para leer la lista de un vistazo:
+
+- **La franja de color del borde izquierdo** indica el estado de cada producto:
+  roja = agotado, ámbar = stock bajo, gris = normal. Se puede recorrer la
+  columna entera sin leer.
+- **Coste y Venta son columnas de ancho fijo**, así que los precios se comparan
+  bajando el ojo.
+- **Bajo el nombre** aparece la categoría, la referencia y el proveedor, en
+  una línea pequeña.
+- El color del cuadrado de la izquierda es el de la categoría del producto.
+
+### Registrar movimientos
+
+- **Salida o entrada de una unidad**: los botones `−` y `+` de la fila. Basta
+  un toque, y sale aviso con opción de **deshacer**.
+- **Entrada o salida de varias unidades, o con motivo**: pulsa la flecha `›` de
+  la izquierda para desplegar la fila. Ahí están también el historial de
+  movimientos y, en móvil, editar y eliminar.
+
+## Copias de seguridad automáticas
+
+No hay que configurar nada. Cada vez que se guarda la base, la aplicación copia
+el `.sqlite` a una carpeta `backups` junto a él con la fecha del día, y **se
+conservan automáticamente las 7 copias más recientes**.
+
+Aun así, conviene exportar una copia de vez en cuando desde
+Ajustes → Base de datos local y guardarla fuera del PC.
+
+## Documentación de la sesión
+
+El detalle de los cambios del 30 de septiembre de 2026, con el antes y el
+después de cada decisión, está en [`CAMBIOS-SESION-2026-09-30.md`](CAMBIOS-SESION-2026-09-30.md).
